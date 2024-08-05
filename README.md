@@ -1,4 +1,4 @@
-# Social-Media pour Tailleurs 🪡✨🚀
+# Miroir-Model 🪡✨🚀
 
 Ce projet est un backend pour un réseau social destiné aux tailleurs, où ils peuvent poster leurs modèles, avoir des followers, commenter, partager, liker des statuts, etc. Il est construit avec Express, Node.js, et MongoDB.
 
@@ -18,6 +18,52 @@ Assurez-vous d'avoir les éléments suivants installés sur votre machine :
 - Node.js (v14.x ou supérieur)
 - MongoDB (v4.x ou supérieur)
 - Postman (pour tester l'API)
+
+## Architecture
+
+social-tailor-app/
+│
+├── config/                  # Configuration (base de données, serveur, etc.)
+│   ├── db.js
+│   ├── server.js
+│
+├── controllers/             # Logique des contrôleurs
+│   ├── authController.js
+│   ├── postController.js
+│   ├── userController.js
+│   ├── notificationController.js
+│   ├── messageController.js
+│
+├── models/                  # Modèles de données (Schémas Mongoose)
+│   ├── user.js
+│   ├── post.js
+│   ├── comment.js
+│   ├── notification.js
+│   ├── message.js
+│
+├── routes/                  # Routes de l'application
+│   ├── authRoutes.js
+│   ├── postRoutes.js
+│   ├── userRoutes.js
+│   ├── notificationRoutes.js
+│   ├── messageRoutes.js
+│
+├── middleware/              # Middleware (authentification, validation, etc.)
+│   ├── authMiddleware.js
+│   ├── validateMiddleware.js
+│
+├── utils/                   # Utilitaires (gestion des fichiers, etc.)
+│   ├── upload.js
+│
+├── tests/                   # Tests unitaires et d'intégration
+│   ├── auth.test.js
+│   ├── post.test.js
+│
+├── .env                     # Variables d'environnement
+├── .gitignore
+├── package.json
+└── server.js                # Point d'entrée de l'application
+
 
 ## Installation
 
@@ -44,68 +90,6 @@ Assurez-vous d'avoir les éléments suivants installés sur votre machine :
     ```
 
 Le serveur devrait maintenant être en cours d'exécution sur [http://localhost:3000](http://localhost:3000).
-
-## Utilisation
-
-### Routes Utilisateurs
-
-- **Enregistrer un utilisateur**
-    ```
-    POST /api/users/register
-    ```
-
-    Corps de la requête (JSON) :
-    ```json
-    {
-      "username": "nom_utilisateur",
-      "email": "email@example.com",
-      "password": "mot_de_passe"
-    }
-    ```
-
-- **Authentifier un utilisateur**
-    ```
-    POST /api/users/login
-    ```
-
-    Corps de la requête (JSON) :
-    ```json
-    {
-      "email": "email@example.com",
-      "password": "mot_de_passe"
-    }
-    ```
-
-- **Obtenir les informations d'un utilisateur**
-    ```
-    GET /api/users/:id
-    ```
-
-### Routes Modèles
-
-- **Créer un nouveau modèle**
-    ```
-    POST /api/models
-    ```
-
-    Corps de la requête (JSON) :
-    ```json
-    {
-      "title": "Titre du modèle",
-      "description": "Description du modèle",
-      "image": "URL de l'image"
-    }
-    ```
-
-- **Obtenir tous les modèles**
-    ```
-    GET /api/models
-    ```
-
-- **Obtenir un modèle spécifique**
-    ```
-    GET /api/models/:id
-    ```
 
 ## Tests
 
