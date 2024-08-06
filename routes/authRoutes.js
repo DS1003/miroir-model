@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+// routes/authRoutes.js
+
+>>>>>>> 4a122c6 (version auth avec réinitialisation)
 import express from 'express';
 import AuthController from '../controllers/authController.js';
 
