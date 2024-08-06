@@ -1,6 +1,9 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import authRoute from './routes/authRoutes.js';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,7 +19,9 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('MongoDB connecté'))
 .catch(err => console.log(err));
 
-// Démarrer le serveur
+// Routes
+app.use('/api/auth', authRoute);
+
 app.listen(port, () => {
   console.log(`Serveur en cours d'exécution sur le port ${port}`);
 });
