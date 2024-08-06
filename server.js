@@ -9,16 +9,14 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // Connexion à MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => console.log('MongoDB connecté'))
+mongoose.connect(process.env.MONGO_URI, {})
+  .then(() => console.log('MongoDB connecté avec succés'))
   .catch(err => console.log(err));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
+
 
 // Démarrer le serveur
 app.listen(port, () => {
