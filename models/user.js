@@ -6,8 +6,9 @@ const userSchema = new Schema({
   prenom: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  type: { type: String, enum: ['Tailleur', 'visiteur'], default: 'visiteur' }
-  
+  type: { type: String, enum: ['Tailleur', 'visiteur'], default: 'visiteur' },
+  resetPasswordToken: { type: String , default: null },
+  resetPasswordExpires: { type: Date, default: Date.now },
   // Ajoutez d'autres champs si nécessaire
 });
 
