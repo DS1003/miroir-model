@@ -6,6 +6,7 @@ const userSchema = new Schema({
   prenom: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  avatar: { type: String, default: null },
   type: { type: String, enum: ['Tailleur', 'visiteur'], default: 'visiteur' },
   resetPasswordToken: { type: String , default: null },
   resetPasswordExpires: { type: Date, default: Date.now },
