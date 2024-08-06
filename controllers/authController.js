@@ -48,7 +48,7 @@ class AuthController {
 
       const message = `
         <h1>Vous avez demandé une réinitialisation de mot de passe</h1>
-        <p>Veuillez suivre ce lien pour réinitialiser votre mot de passe</p>
+        <p>Veuillez copier ce lien dans URL de postman pour réinitialiser votre mot de passe</p>
         <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
       `;
 
