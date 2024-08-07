@@ -74,15 +74,15 @@ exports.deletePost = async (req, res) => {
       return res.status(403).json({ message: 'Accès interdit' }); 
     }
 
-    await post.remove();
+    await Post.deleteOne({ _id: postId });
 
     res.status(200).json({ message: 'Post supprimé avec succès' });
   } catch (error) {
     console.error('Erreur lors de la suppression du post:', error);
     res.status(500).json({ message: 'Erreur du serveur' });
   }
+};
 
-}
 
 
 exports.getPosts = async (req, res) => {
@@ -337,6 +337,7 @@ exports.sharePost = async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: 'Utilisateur non trouvé' });
       }
+
   
       const originalPost = await Post.findById(postId);
   
