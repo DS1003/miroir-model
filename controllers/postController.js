@@ -110,7 +110,7 @@ exports.addComment = async (req, res) => {
       content,
       createdAt: Date.now(),
       lastupdatedAt: Date.now(),
-      likes: 0,
+      likes: 0
     };
 
     post.comments.push(comment);
@@ -122,3 +122,204 @@ exports.addComment = async (req, res) => {
     res.status(500).json({ message: 'Erreur du serveur' });
   }
 };
+exports.updateComment = async (req, res) => {
+  const { postId, commentId, userId, content } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post non trouvé' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    if (comment.user.toString() !== userId) {
+      return res.status(403).json({ message: 'Accès interdit' });
+    }
+
+    comment.content = content;
+    comment.lastupdatedAt = Date.now();
+    await post.save();
+
+    res.status(200).json({ message: 'Commentaire mis à jour avec succès', post });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du commentaire:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+}
+exports.deleteComment = async (req, res) => {
+  const { postId, commentId, userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post non trouvé' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    if (comment.user.toString() !== userId) {
+      return res.status(403).json({ message: 'Accès interdit' });
+    }
+
+    comment.remove();
+
+    res.status(200).json({ message: 'Commentaire supprimé avec succès', post });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du commentaire:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+}
+exports.likePost = async (req, res) => {
+  const { postId, userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post non trouvé' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    if (post.likes.includes(userId)) {
+        return res.status(400).json({ message: 'Vous avez déjà liké ce post' });
+    }
+
+    post.likes += 1;
+
+    await post.save();
+
+    res.status(200).json({ message: 'Post liké avec succès', post });
+  } catch (error) {
+    console.error('Erreur lors du like du post:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+
+}
+
+exports.unlikePost = async (req, res) => {
+  const { postId, userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post non trouvé' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    if (!post.likes.includes(userId)) {
+        return res.status(400).json({ message: 'Vous avez déjà non liké ce post' });
+    }
+
+    post.likes -= 1;
+
+    await post.save();
+
+    res.status(200).json({ message: 'Post non liké avec succès', post });
+  } catch (error) {
+    console.error('Erreur lors du non like du post:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+
+}
+
+exports.likeComment = async (req, res) => {
+  const { postId, commentId, userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post non trouvé' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    
+
+    comment.likes += 1;
+
+
+    await post.save();
+
+    res.status(200).json({ message: 'Commentaire liké avec succès', post });
+  } catch (error) {
+    console.error('Erreur lors du like du commentaire:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+}
+exports.unlikeComment = async (req, res) => {
+  const { postId, commentId, userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post non trouvé' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+   
+    comment.likes -= 1;
+
+    await post.save();
+
+    res.status(200).json({ message: 'Commentaire Unlike avec succès', post });
+  } catch (error) {
+    console.error('Erreur lors du Unlike du commentaire:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+}
