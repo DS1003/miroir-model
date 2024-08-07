@@ -1,33 +1,39 @@
 const Post = require('../models/post');
 const User = require('../models/user');
 
+
 exports.createPost = async (req, res) => {
-  const { userId, content } = req.body;
-
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    const { userId, content } = req.body;
+    const mediaUrls = req.files ? req.files.map(file => file.path) : []; // Utilisez l'URL ou le chemin selon votre configuration
+  
+    try {
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+  
+      if (user.type !== 'Tailleur') {
+        return res.status(403).json({ message: 'Seuls les Tailleurs peuvent publier' });
+      }
+  
+      const newPost = new Post({
+        user: userId,
+        content,
+        media: mediaUrls // Enregistrez les URL des fichiers
+      });
+  
+      await newPost.save();
+  
+      res.status(201).json({ message: 'Publication créée avec succès', post: newPost });
+    } catch (error) {
+      console.error('Erreur lors de la création du post:', error);
+      res.status(500).json({ message: 'Erreur du serveur' });
     }
-
-    if (user.type !== 'Tailleur') {
-      return res.status(403).json({ message: 'Seuls les Tailleurs peuvent publier' });
-    }
-
-    const newPost = new Post({
-      user: userId,
-      content,
-    });
-
-    await newPost.save();
-
-    res.status(201).json({ message: 'Publication créée avec succès', post: newPost });
-  } catch (error) {
-    console.error('Erreur lors de la création du post:', error);
-    res.status(500).json({ message: 'Erreur du serveur' });
-  }
-};
+  };
+  
+  
+  
 exports.updatePost = async (req, res) => {
   const { postId, userId, content } = req.body;
 
