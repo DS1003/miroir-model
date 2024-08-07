@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const cloudinary = require('../config/cloudinary');
 const upload = require('../config/multer');
+
 const nodemailer = require('nodemailer');exports.uploadAvatar = async (req, res) => {
   const { userId } = req.body;
 

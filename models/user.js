@@ -10,6 +10,7 @@ const userSchema = new Schema({
   type: { type: String, enum: ['Tailleur', 'visiteur'], default: 'visiteur' },
   resetPasswordToken: { type: String , default: null },
   resetPasswordExpires: { type: Date, default: Date.now },
+  
   // Ajoutez d'autres champs si nécessaire
 });
 

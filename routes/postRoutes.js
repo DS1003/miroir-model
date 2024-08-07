@@ -22,5 +22,8 @@ router.post('/unlike', authMiddleware, postController.unlikePost);
 router.post('/likecomment', authMiddleware, postController.likeComment);
 router.post('/unlikecomment', authMiddleware, postController.unlikeComment);
 
+//partage du post
+router.post('/share', authMiddleware, postController.sharePost);
+
 
 module.exports = router;
