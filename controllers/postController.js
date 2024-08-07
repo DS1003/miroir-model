@@ -110,7 +110,7 @@ exports.addComment = async (req, res) => {
       content,
       createdAt: Date.now(),
       lastupdatedAt: Date.now(),
-      likes: 0
+      likes: 0,
     };
 
     post.comments.push(comment);
@@ -207,9 +207,6 @@ exports.likePost = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-    if (post.likes.includes(userId)) {
-        return res.status(400).json({ message: 'Vous avez déjà liké ce post' });
-    }
 
     post.likes += 1;
 
@@ -237,10 +234,6 @@ exports.unlikePost = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
-    }
-
-    if (!post.likes.includes(userId)) {
-        return res.status(400).json({ message: 'Vous avez déjà non liké ce post' });
     }
 
     post.likes -= 1;
@@ -278,6 +271,7 @@ exports.likeComment = async (req, res) => {
     }
 
     
+  
 
     comment.likes += 1;
 

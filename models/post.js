@@ -19,11 +19,10 @@ const CommentSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    likes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        default: [],
-    }]
+    likes: {
+        type: Number,
+        default: 0
+    }
 });
 
 const PostSchema = new Schema({
@@ -44,11 +43,10 @@ const PostSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    likes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        default: [],
-    }],
+    likes: {
+        type: Number,
+        default: 0
+    },
     comments: [CommentSchema]
 });
 
