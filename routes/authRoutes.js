@@ -9,5 +9,4 @@ router.post('/request-password-reset', authController.requestPasswordReset);
 router.put('/reset-password/:token', authController.resetPassword);
 router.post('/uploadAvatar', upload.single('avatar'), authController.uploadAvatar);
 
-
 module.exports = router;

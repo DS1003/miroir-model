@@ -114,7 +114,7 @@ exports.requestPasswordReset = async (req, res) => {
       subject: 'Réinitialisation de mot de passe',
       text: `Vous recevez ceci parce que vous (ou quelqu'un d'autre) avez demandé la réinitialisation du mot de passe de votre compte.\n\n
       Veuillez cliquer sur le lien suivant, ou copier-coller dans votre navigateur pour compléter le processus:\n\n
-      http://${req.headers.host}/reset-password/${token}\n\n
+      http://${req.headers.host}/api/auth/reset-password/${token}\n\n
       Si vous ne l'avez pas demandé, veuillez ignorer cet email et votre mot de passe restera inchangé.\n`,
     };
 
@@ -159,6 +159,8 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+
+
 exports.uploadAvatar = async (req, res) => {
   const { userId } = req.body;
 
@@ -182,7 +184,7 @@ exports.uploadAvatar = async (req, res) => {
   }
 };
 
-exports.createPost = async (req, res) => {
+/* exports.createPost = async (req, res) => {
   const { userId, content } = req.body;
   const mediaUrls = req.files.map(file => file.path);
 
@@ -211,3 +213,4 @@ exports.createPost = async (req, res) => {
     res.status(500).json({ message: 'Erreur du serveur' });
   }
 };
+ */
