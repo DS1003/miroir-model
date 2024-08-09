@@ -83,6 +83,12 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Erreur du serveur' });
   }
 };
+
+exports.logout = async (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Deconnexion reussie' });
+};
+
 exports.requestPasswordReset = async (req, res) => {
   const { email } = req.body;
 
@@ -184,33 +190,118 @@ exports.uploadAvatar = async (req, res) => {
   }
 };
 
-/* exports.createPost = async (req, res) => {
-  const { userId, content } = req.body;
-  const mediaUrls = req.files.map(file => file.path);
+exports.followUser = async (req, res) => {
+  const { userId } = req.body; // ID de l'utilisateur à suivre
+  const currentUserId = req.user.id; // ID de l'utilisateur actuel
 
   try {
-    const user = await User.findById(userId);
+    const userToFollow = await User.findById(userId);
+    const currentUser = await User.findById(currentUserId);
 
-    if (!user) {
+    if (!userToFollow) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    if (user.type !== 'Tailleur') {
-      return res.status(403).json({ message: 'Seuls les Tailleurs peuvent publier' });
+    // Vérifier si l'utilisateur est déjà suivi
+    if (currentUser.following.includes(userId)) {
+      return res.status(400).json({ message: 'Vous suivez déjà cet utilisateur' });
     }
 
-    const newPost = new Post({
-      user: userId,
-      content,
-      media: mediaUrls
-    });
+    // Ajouter l'utilisateur à la liste des suivis
+    currentUser.following.push(userId);
+    userToFollow.followers.push(currentUserId);
 
-    await newPost.save();
+    await currentUser.save();
+    await userToFollow.save();
 
-    res.status(201).json({ message: 'Publication créée avec succès', post: newPost });
+    res.status(200).json({ message: 'Utilisateur suivi avec succès' });
   } catch (error) {
-    console.error('Erreur lors de la création du post:', error);
+    console.error('Erreur lors du suivi de l\'utilisateur:', error);
     res.status(500).json({ message: 'Erreur du serveur' });
   }
 };
- */
+
+exports.unfollowUser = async (req, res) => {
+  const { userId } = req.body; // ID de l'utilisateur à ne plus suivre
+  const currentUserId = req.user.id; // ID de l'utilisateur actuel
+
+  try {
+    const userToUnfollow = await User.findById(userId);
+    const currentUser = await User.findById(currentUserId);
+
+    if (!userToUnfollow) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Vérifier si l'utilisateur est déjà suivi
+    if (!currentUser.following.includes(userId)) {
+      return res.status(400).json({ message: 'Vous ne suivez pas cet utilisateur' });
+    }
+
+    // Retirer l'utilisateur de la liste des suivis
+    currentUser.following = currentUser.following.filter(id => id.toString() !== userId);
+    userToUnfollow.followers = userToUnfollow.followers.filter(id => id.toString() !== currentUserId);
+
+    await currentUser.save();
+    await userToUnfollow.save();
+
+    res.status(200).json({ message: 'Vous avez arrêté de suivre cet utilisateur' });
+  } catch (error) {
+    console.error('Erreur lors du désabonnement:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+};
+
+exports.blockUser = async (req, res) => {
+  const { userId } = req.params;
+  const currentUserId = req.user.id; // ID de l'utilisateur connecté
+
+  try {
+    const userToBlock = await User.findById(userId);
+    if (!userToBlock) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const currentUser = await User.findById(currentUserId);
+    if (currentUser.blockedUsers.includes(userId)) {
+      return res.status(400).json({ message: 'Utilisateur déjà bloqué' });
+    }
+
+    currentUser.blockedUsers.push(userId);
+
+    // Supprimer le suivi mutuel si l'utilisateur est bloqué
+    currentUser.followers.pull(userId);
+    currentUser.following.pull(userId);
+    userToBlock.followers.pull(currentUserId);
+    userToBlock.following.pull(currentUserId);
+
+    await currentUser.save();
+    await userToBlock.save();
+
+    res.status(200).json({ message: 'Utilisateur bloqué avec succès' });
+  } catch (error) {
+    console.error('Erreur lors du blocage de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+};
+
+// Débloquer un utilisateur
+exports.unblockUser = async (req, res) => {
+  const { userId } = req.params;
+  const currentUserId = req.user.id;
+
+  try {
+    const currentUser = await User.findById(currentUserId);
+    if (!currentUser.blockedUsers.includes(userId)) {
+      return res.status(400).json({ message: 'Cet utilisateur n\'est pas bloqué' });
+    }
+
+    currentUser.blockedUsers.pull(userId);
+    await currentUser.save();
+
+    res.status(200).json({ message: 'Utilisateur débloqué avec succès' });
+  } catch (error) {
+    console.error('Erreur lors du déblocage de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Erreur du serveur' });
+  }
+};

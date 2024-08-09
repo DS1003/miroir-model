@@ -10,6 +10,9 @@ const userSchema = new Schema({
   type: { type: String, enum: ['Tailleur', 'visiteur'], default: 'visiteur' },
   resetPasswordToken: { type: String , default: null },
   resetPasswordExpires: { type: Date, default: Date.now },
+  blockedUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
   
   // Ajoutez d'autres champs si nécessaire
 });

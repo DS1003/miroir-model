@@ -6,7 +6,7 @@ const upload = require('../middleware/uploadMiddleware'); // Chemin vers votre c
 
 // Routes pour les posts
 router.get('/', postController.getPosts);
-router.post('/', authMiddleware, upload.array('media', 10), postController.createPost);
+router.post('/', authMiddleware, upload.array('media'), postController.createPost);
 router.put('/', authMiddleware, postController.updatePost);
 router.delete('/', authMiddleware, postController.deletePost);
 
